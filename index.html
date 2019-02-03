@@ -1,0 +1,55 @@
+<!-- 
+Simple web-based inventory management system.
+(c) Anti Sullin 2019
+-->	
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.6/angular.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ng-table/1.0.0/ng-table.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+
+	<script src="//cdnjs.cloudflare.com/ajax/libs/angular-translate/2.18.1/angular-translate.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-translate/2.18.1/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
+
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/ng-table/1.0.0/ng-table.css">
+
+	<script src="app.js"></script>
+</head>
+<body class="container-fluid">
+	<div ng-app="myApp" style="max-width: 1000px; margin: auto;">
+	  <div ng-controller="viewerController">
+		<h4>{{'TITLE'|translate}}
+			<div class="pull-right">
+				<a href="" ng-click="changeLang('en')" class="badge badge-info">EN</a>
+				<a href="" ng-click="changeLang('et')" class="badge badge-info">ET</a>
+			</div>
+		</h4>
+	    <span class="input-group">
+			<input type="text" class="form-control" id="search" placeholder="{{'SEARCH_PLACEHOLDER'|translate}}" ng-model="tableParams.filter().code" ng-keypress="searchKeyPress($event)" ng-model-options="{ getterSetter: true }" autocomplete="off" autofocus>
+			<span class="input-group-btn">
+	    		<button type="button" class="btn btn-default" ng-click="openItem(tableParams.filter().code)" ng-disabled="tableParams.filter().code==''">{{'VIEW_BTN'|translate}}</button>
+			</span>
+		</span>
+		<hr>
+		<div uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + (alert.type || 'warning')" close="closeAlert($index)">{{alert.msg}}</div>
+		<a href="" ng-click="addItem()"><span class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="modal" data-target="#exampleModal"></span>{{'ADDNEW_BTN'|translate}}</a> |
+		<a href="" ng-click="reload()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>{{'REFRESH_BTN'|translate}}</a>
+		<table ng-table-dynamic="tableParams with colsList" class="table table-bordered table-striped table-condensed table-hover">
+		  <tr ng-repeat="row in $data track by row.code">
+			<td ng-if="cols.code.show">
+	            <a href="" ng-click="showItem(row)"><em>{{::row.code}}</em></a>
+          	</td>
+		  	<td ng-if="cols.name.show">{{::row.name}}</td>
+		  	<td ng-if="cols.quantity.show">{{::row.quantity}}</td>
+		  </tr>
+		</table>
+	  </div>
+	</div>
+</body>
+

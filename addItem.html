@@ -1,0 +1,21 @@
+<form name="addForm">
+  <div class="modal-header">
+    <h3 class="modal-title">{{'TITLE_ADDITEM'|translate}}</h3>
+  </div>
+  <div class="modal-body clearfix">
+      <div class="alert alert-danger" role="alert" id="alert" ng-if="alert">{{alert}}</div>
+      <div class="form-group">
+        <label for="code" class="col-form-label">{{'CODE'|translate}}:</label>
+        <input type="text" class="form-control" id="code" name="code" ng-model="data.code" ng-maxlength="20" required autofocus>
+      </div>
+      <div class="form-group">
+        <label for="name" class="col-form-label">{{'NAME'|translate}}:</label>
+        <input type="text" class="form-control" id="name" name="name" ng-model="data.name" ng-maxlength="20" required>
+      </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary" ng-click="submit()" ng-disabled="addForm.code.$invalid || addForm.name.$invalid">{{'ADD_BTN'|translate}}</button>
+    <button type="button" class="btn btn-secondary" ng-click="close()">{{'CLOSE_BTN'|translate}}</button>
+  </div>
+</form>
+
