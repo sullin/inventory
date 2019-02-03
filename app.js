@@ -1,4 +1,4 @@
-var app = angular.module("myApp", ["ngTable", "ui.bootstrap", 'pascalprecht.translate']);
+var app = angular.module("myApp", ["ngTable", "ui.bootstrap", 'ngCookies', 'pascalprecht.translate']);
 
 app.config(function ($translateProvider) {
 	$translateProvider
@@ -16,6 +16,8 @@ app.config(function ($translateProvider) {
 		}
 	)
 	.fallbackLanguage('en')
+	.preferredLanguage('en')
+	.useCookieStorage()
 	.determinePreferredLanguage();
 });
 
