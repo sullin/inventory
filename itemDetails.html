@@ -9,12 +9,12 @@
 	<a href="" ng-click="addTransaction()"><span class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="modal" data-target="#exampleModal"></span>{{'ADDNEW_BTN'|translate}}</a> |
 	<a href="" ng-click="reload()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>{{'REFRESH_BTN'|translate}}</a>
 	<table ng-table-dynamic="tableParams with colsList" class="table table-bordered table-striped table-condensed table-hover">
-		  <tr ng-repeat="row in $data track by row.id">
-		  	<td ng-if="cols.quantity.show">{{::row.quantity}}</td>
-		  	<td ng-if="cols.date.show">{{::row.date}}</td>
-		  	<td ng-if="cols.comment.show">{{::row.comment}}</td>
-		  </tr>
-		</table>
+		<tr ng-repeat="row in $data track by row.id">
+			<td ng-if="cols.quantity.show">{{row.quantity}}</td>
+			<td ng-if="cols.date.show">{{row.date}}</td>
+			<td ng-if="cols.comment.show">{{row.comment}}</td>
+		</tr>
+	</table>
 </div>
 <div class="modal-footer">
 	<button class="btn btn-primary" type="button" ng-click="close()">{{'CLOSE_BTN'|translate}}</button>
