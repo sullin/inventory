@@ -149,7 +149,8 @@ app.controller("itemDetailsController", function($scope, item, $http, NgTablePar
 	$scope.tableParams = new NgTableParams({
 		page: 1,
 		count: 10,
-		filter: { comment: "" } 
+		filter: { comment: "" },
+		sorting: { date: "desc" }
 	}, {
 		filterDelay: 300,
 		getData: function(params) {
