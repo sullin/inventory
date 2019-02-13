@@ -20,5 +20,7 @@
 	"ERR_ITEMNOTFOUND": "Item not found: ",
 	"ERR_FAILEDADDINGITEM": "Failed adding item",
 	"ERR_FAILEDADDINGTRANS": "Failed adding transaction",
-	"CURQUANTITY": "Current quantity"
+	"CURQUANTITY": "Current quantity",
+	"TRANSACTIONS": "Transactions",
+	"TRANSACTIONS_BTN": "Transactions"
 }

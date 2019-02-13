@@ -20,5 +20,7 @@
 	"ERR_ITEMNOTFOUND": "Ei leidnud asja: ",
 	"ERR_FAILEDADDINGITEM": "Lisamise viga",
 	"ERR_FAILEDADDINGTRANS": "Lisamise viga",
-	"CURQUANTITY": "Kogus hetkel"
+	"CURQUANTITY": "Kogus hetkel",
+	"TRANSACTIONS": "Tehingud",
+	"TRANSACTIONS_BTN": "Tehingud"
 }

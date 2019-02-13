@@ -98,6 +98,17 @@ app.controller("viewerController", function($scope, $q, $http, NgTableParams, $u
 		}, function() {});
 	};
 
+	$scope.showTransactions = function() {
+		$uibModal.open({
+			animation: false,
+			templateUrl: 'transactions.html',
+			controller: 'transactionsController',
+			size: 'lg',
+		}).result.then(function () {
+			$scope.tableParams.reload();
+		}, function() {});
+	};
+
 	$scope.openItem = function(code) {
 		$http.get('api/data.php/item', {cache: false, params: {"code": code}}).then(function(data) {
 			if (data["data"]["ok"]) {
@@ -193,6 +204,74 @@ app.controller("itemDetailsController", function($scope, item, $http, NgTablePar
 	};
 });
 
+app.controller("transactionsController", function($scope, $http, NgTableParams, $uibModalInstance, $uibModal, $translate) {
+	$scope.alerts = [];
+	$scope.close = function() {
+		return $uibModalInstance.close();
+	};
+
+	$scope.colsList = [
+		{ field: "date", sortable: "date", title: "", show: true },
+		{ field: "code", sortable: "code", title: "", show: true },
+		{ field: "name", sortable: "name", title: "", show: true },
+		{ field: "quantity", sortable: "quantity", title: "", show: true },
+		{ field: "comment", sortable: "comment", title: "", show: true },
+	];
+	$scope.cols = _.indexBy($scope.colsList, "field");
+
+	$translate('DATE').then(function (text) { $scope.cols['date'].title=text; });
+	$translate('CODE').then(function (text) { $scope.cols['code'].title=text; });
+	$translate('NAME').then(function (text) { $scope.cols['name'].title=text; });
+	$translate('QUANTITY').then(function (text) { $scope.cols['quantity'].title=text; });
+	$translate('COMMENT').then(function (text) { $scope.cols['comment'].title=text; });
+
+	$scope.msg_errloadingdata = "";
+	$translate('ERR_LOADINGDATA').then(function (text) { $scope.msg_errloadingdata=text; });
+
+	$scope.tableParams = new NgTableParams({
+		page: 1,
+		count: 10,
+		filter: { comment: "" },
+		sorting: { date: "desc" }
+	}, {
+		filterDelay: 300,
+		getData: function(params) {
+			return $http.get('api/data.php/transactions', {cache: false, params: params.url()}).then(function(data) {
+				$scope.closeAlerts("data");
+				params.total(data["data"]["total"]);
+				return data["data"]["transactions"];
+			}, function() {
+				$scope.closeAlerts("data");
+				$scope.alerts.push({type: "data", msg: $scope.msg_errloadingdata});
+			});
+		}
+	});
+
+	$scope.closeAlerts = function(cat) {
+		$scope.alerts = $scope.alerts.filter(function(v,i,a) {
+			return v.cat != cat;
+		});
+	}
+	$scope.closeAlert = function(index) {
+		$scope.alerts.splice(index, 1);
+	};
+	$scope.reload = function(item) {
+		$scope.tableParams.reload();
+	};
+	$scope.showItem = function(item) {
+		$uibModal.open({
+			animation: false,
+			templateUrl: 'itemDetails.html',
+			controller: 'itemDetailsController',
+			size: 'lg',
+			resolve: {
+				item: function () {return item;}
+			}
+		}).result.then(function () {
+			$scope.tableParams.reload();
+		}, function() {});
+	};
+});
 
 app.controller("addItemController", function($scope, $http, $uibModalInstance, $translate) {
 	$scope.close = function() {
