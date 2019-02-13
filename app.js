@@ -154,7 +154,7 @@ app.controller("itemDetailsController", function($scope, item, $http, NgTablePar
 	}, {
 		filterDelay: 300,
 		getData: function(params) {
-			return $http.get('api/data.php/transactions', {cache: false, params: Object.assign({id: $scope.item['id']}, params.url()) }).then(function(data) {
+			return $http.get('api/data.php/itemtransactions', {cache: false, params: Object.assign({id: $scope.item['id']}, params.url()) }).then(function(data) {
 				$scope.closeAlerts("data");
 				params.total(data["data"]["total"]);
 				$scope.totalq = data["data"]["totalq"];

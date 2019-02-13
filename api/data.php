@@ -49,6 +49,10 @@ function handle_uri($method, $uri) {
 		item();
 		return;
 	}
+	if ($method == "GET" && $uri == "/data.php/itemtransactions") {
+		itemtransactions();
+		return;
+	}
 	if ($method == "GET" && $uri == "/data.php/transactions") {
 		transactions();
 		return;
@@ -150,7 +154,7 @@ function additem() {
 	$response["ok"] =  true;
 }
 
-function transactions() {
+function itemtransactions() {
 	global $respcode, $response;
 
 	if (!isset($_GET["id"])) {
@@ -171,20 +175,20 @@ function transactions() {
 	if (isset($_GET["count"])) {
 		$num = intval($_GET["count"]);
 	}
-	$sort = array("code" => "asc");
+	$sort = array("date" => "desc");
 	if (isset($_GET["sorting"]) && is_array($_GET["sorting"])) {
 		$sort = $_GET["sorting"];
 	}
 
 	try {
-		$count = db_get_transaction_cnt($id, $filter);
+		$count = db_get_item_transaction_cnt($id, $filter);
 	} catch(PDOException $e) {
 		$response["message"] = "Failed counting data";
 		return;
 	}
 
 	try {
-		$items = db_get_transactions($id, $filter, $page, $num, $sort);
+		$trs = db_get_item_transactions($id, $filter, $page, $num, $sort);
 	} catch(PDOException $e) {
 		$response["message"] = "Failed loading data";
 		return;
@@ -199,8 +203,45 @@ function transactions() {
 
 	$respcode = 200;
 	$response["ok"] =  true;
-	$response["transactions"] = $items;
+	$response["transactions"] = $trs;
 	$response["totalq"] = $quantity;
+	$response["total"] = $count;
+
+}
+
+function transactions() {
+	global $respcode, $response;
+
+	$page = 1;
+	if (isset($_GET["page"])) {
+		$page = intval($_GET["page"]);
+	}
+	$num = 10;
+	if (isset($_GET["count"])) {
+		$num = intval($_GET["count"]);
+	}
+	$sort = array("date" => "desc");
+	if (isset($_GET["sorting"]) && is_array($_GET["sorting"])) {
+		$sort = $_GET["sorting"];
+	}
+
+	try {
+		$count = db_get_transaction_cnt();
+	} catch(PDOException $e) {
+		$response["message"] = "Failed counting data";
+		return;
+	}
+
+	try {
+		$trs = db_get_transactions($page, $num, $sort);
+	} catch(PDOException $e) {
+		$response["message"] = "Failed loading data";
+		return;
+	}
+
+	$respcode = 200;
+	$response["ok"] =  true;
+	$response["transactions"] = $trs;
 	$response["total"] = $count;
 }
 
@@ -304,7 +345,7 @@ function db_add_item($code, $name) {
 	$stmt->execute();
 }
 
-function db_get_transaction_cnt($id, $filter) {
+function db_get_item_transaction_cnt($id, $filter) {
 	global $pdo;
 
 	$stmt = $pdo->prepare("SELECT count(*) as numrows FROM transactions WHERE itemid=:id AND comment LIKE CONCAT(:filter, '%');");
@@ -315,7 +356,7 @@ function db_get_transaction_cnt($id, $filter) {
 	return $row['numrows'];
 }
 
-function db_get_transactions($id, $filter, $page, $num, $sort) {
+function db_get_item_transactions($id, $filter, $page, $num, $sort) {
 	global $pdo;
 	$start = ($page-1) * $num;
 	$items_per_page = $num;
@@ -338,6 +379,38 @@ function db_get_transactions($id, $filter, $page, $num, $sort) {
 	$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 	return $rows;
+}
+
+function db_get_transactions($page, $num, $sort) {
+	global $pdo;
+	$start = ($page-1) * $num;
+	$items_per_page = $num;
+
+	$sortcol = array_keys($sort)[0];
+	$sortdir = $sort[$sortcol];
+
+	$sortcols = ["date", "quantity", "comment", "id", "name"];
+	if (!in_array($sortcol, $sortcols)) $sortcol = $sortcols[0];
+
+	$sortdirs = ["asc", "desc"];
+	if (!in_array($sortdir, $sortdirs)) $sortdir = $sortdirs[0];
+
+	$stmt = $pdo->prepare("SELECT transactions.id as xid, items.id as id, items.code as code, items.name as name, transactions.quantity as quantity, transactions.date as date, transactions.comment as comment FROM transactions LEFT JOIN items ON items.id=transactions.itemid ORDER BY $sortcol $sortdir LIMIT :start, :count;");
+	$stmt->bindValue(":start", $start, PDO::PARAM_INT);
+	$stmt->bindValue(":count", $num, PDO::PARAM_INT);
+	$stmt->execute();
+	$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+	return $rows;
+}
+
+function db_get_transaction_cnt() {
+	global $pdo;
+
+	$stmt = $pdo->prepare("SELECT count(*) as numrows FROM transactions;");
+	$stmt->execute();
+	$row = $stmt->fetch();
+	return $row['numrows'];
 }
 
 function db_add_transaction($itemid, $quantity, $date, $comment) {
