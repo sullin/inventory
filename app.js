@@ -156,6 +156,8 @@ app.controller("itemDetailsController", function($scope, item, $http, NgTablePar
 
 	$scope.msg_errloadingdata = "";
 	$translate('ERR_LOADINGDATA').then(function (text) { $scope.msg_errloadingdata=text; });
+	$scope.msg_erraddingtrans = "";
+	$translate('ERR_FAILEDADDINGTRANS').then(function (text) { $scope.msg_erraddingtrans=text; });
 
 	$scope.tableParams = new NgTableParams({
 		page: 1,
@@ -200,6 +202,18 @@ app.controller("itemDetailsController", function($scope, item, $http, NgTablePar
 		}).result.then(function (selectedItem) {
 			$scope.tableParams.reload();
 		}, function() {
+		});
+	};
+	$scope.minus1 = function() {
+		var d = {itemid: $scope.item.id, quantity:-1, date: new Date(), comment:''};
+		$http.post('api/data.php/transaction', d).then(function(data) {
+			$scope.closeAlerts("m1");
+			if (data["data"]["ok"])
+				$scope.reload();
+			else
+				$scope.alerts.push({type: "m1", msg: $scope.msg_erraddingtrans});
+		}, function(data) {
+			$scope.alerts.push({type: "m1", msg: $scope.msg_erraddingtrans});
 		});
 	};
 });

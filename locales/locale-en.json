@@ -22,5 +22,6 @@
 	"ERR_FAILEDADDINGTRANS": "Failed adding transaction",
 	"CURQUANTITY": "Current quantity",
 	"TRANSACTIONS": "Transactions",
-	"TRANSACTIONS_BTN": "Transactions"
+	"TRANSACTIONS_BTN": "Transactions",
+	"MINUS1": "Remove 1"
 }

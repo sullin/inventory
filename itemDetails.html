@@ -4,6 +4,9 @@
 <div class="modal-body clearfix" id="modal-body">
 	{{item.name}}<br>
 	<label>{{'CURQUANTITY'|translate}}:</label> {{totalq}}
+	<div class="pull-right" ng-if="totalq>0">
+		<button type="button" class="btn" ng-click="minus1()"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> {{'MINUS1'|translate}}</button>
+	</div>
 	<h3>{{'TRANSACTIONS'|translate}}</h3>
 	<div uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + (alert.type || 'warning')" close="closeAlert($index)">{{alert.msg}}</div>
 	<a href="" ng-click="addTransaction()"><span class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="modal" data-target="#exampleModal"></span> {{'ADDNEW_BTN'|translate}}</a> |

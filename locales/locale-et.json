@@ -22,5 +22,6 @@
 	"ERR_FAILEDADDINGTRANS": "Lisamise viga",
 	"CURQUANTITY": "Kogus hetkel",
 	"TRANSACTIONS": "Tehingud",
-	"TRANSACTIONS_BTN": "Tehingud"
+	"TRANSACTIONS_BTN": "Tehingud",
+	"MINUS1": "Eemalda 1"
 }
